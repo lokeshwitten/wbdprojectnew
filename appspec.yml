@@ -3,12 +3,3 @@ os: linux
 files:
   - source: /
     destination: /root/express-app
-hooks:
-  BeforeInstall:
-    - location: scripts/before_install.sh
-      timeout: 300
-      runas: root
-  ApplicationStart:
-    - location: scripts/application_start.sh
-      timeout: 300
-      runas: root
