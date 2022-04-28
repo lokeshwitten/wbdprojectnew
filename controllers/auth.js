@@ -82,39 +82,40 @@ exports.email_verify = (req, res, next) => {
 
 }
 exports.otp_verify = async(req, res, next) => {
-    console.log('In the verificaion fucntion')
-    const userid = req.body.tempuserid
-    const otp = req.body.otp
-    if (!otp) {
-        return res.status(401).json("EMPTY OTP field Not permitted")
-    }
-    if (!userid) {
-        return res.status(401).json("Session Expired.Please try again")
-    }
-    const user = await User.findByPk(userid)
-    if (user) {
-        console.log('User exists')
-        const email = user.email
-        const redistoken = email + 'token'
-        console.log(redistoken)
-        try {
-            const token = await client.get(redistoken)
-            console.log(token)
-            if (token !== null) {
-                try {
-                    const decodedtoken = jwt.verify(token, otp)
-                    if (decodedtoken) {
-                        const usertoken = jwt.sign({ email: email, password: user.password }, 'happykumarjayswal')
+        console.log('In the verificaion fucntion')
+        const userid = req.body.tempuserid
+        const otp = req.body.otp
+        if (!otp) {
+            return res.status(401).json("EMPTY OTP field Not permitted")
+        }
+        if (!userid) {
+            return res.status(401).json("Session Expired.Please try again")
+        }
+        const user = await User.findByPk(userid)
+        if (user) {
+            console.log('User exists')
+            const email = user.email
+            const redistoken = email + 'token'
+            console.log(redistoken)
+            try {
+                const token = await client.get(redistoken)
+                console.log(token)
+                if (token !== null) {
+                    try {
+                        const decodedtoken = jwt.verify(token, otp)
+                        if (decodedtoken) {
+                            const usertoken = jwt.sign({ email: email, password: user.password }, 'happykumarjayswal')
 
-                        return res.status(200).json({ message: "Succesfuly Logged in", token: usertoken })
+                            return res.status(200).json({ message: "Succesfuly Logged in", token: usertoken })
+                        }
+                    } catch {
+                        return res.status(401).json({ message: "Incorrect OTP.Try again" })
                     }
-                } catch {
-                    return res.status(401).json({ message: "Incorrect OTP.Try again" })
                 }
+            } catch (err) {
+                console.log(err)
+                return res.status(401).json({ message: "OTP expired.Try again" })
             }
-        } catch (err) {
-            console.log(err)
-            return res.status(401).json({ message: "OTP expired.Try again" })
         }
     }
-}
+    ////
