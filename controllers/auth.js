@@ -105,10 +105,7 @@ exports.otp_verify = async(req, res, next) => {
                     const decodedtoken = jwt.verify(token, otp)
                     if (decodedtoken) {
                         const usertoken = jwt.sign({ email: email, password: user.password }, 'happykumarjayswal')
-                        result = await client.del(redistoken)
-                        if (result == 1) {
 
-                        }
                         return res.status(200).json({ message: "Succesfuly Logged in", token: usertoken })
                     }
                 } catch {
