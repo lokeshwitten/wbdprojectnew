@@ -1,7 +1,9 @@
 const { json } = require('express/lib/response')
 const jwt = require('jsonwebtoken')
+const client = require('../util/cache')
 const User = require('../models/user')
 const SibApiV3Sdk = require('sib-api-v3-sdk');
+const { token } = require('morgan');
 let defaultClient = SibApiV3Sdk.ApiClient.instance;
 
 let apiKey = defaultClient.authentications['api-key'];
@@ -39,18 +41,26 @@ exports.login = (req, res, next) => {
         (users) => {
             user = users[0]
             if (users.length > 0) {
+
                 if (user.password == req.body.password) {
-                    const token = jwt.sign({ email: req.body.email, password: req.body.password }, 'happykumarjayswal')
-                    res.status(200).json({ message: "Login successfull", token: token, userId: user.id, userName: user.name })
-                        // sendSmtpEmail.subject = "UFIT Login";
-                        // sendSmtpEmail.htmlContent = "<html><body><h1>Welcome to UFIT. Glad to have you with us </h1></body></html>";
-                        // sendSmtpEmail.sender = { "name": "Lokesh", "email": "gurorkrupa@gmail.com" };
-                        // sendSmtpEmail.to = [{ "email": "lokesh.g19@iiits.in", "name": "Jane Doe" }];
-                        // apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
-                        //     console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-                        // }, function(error) {
-                        //     console.error(error);
-                        // });
+                    const secretcode = Math.floor(Math.random() * 899999 + 100000).toString()
+                    const temptoken = jwt.sign({ email: req.body.email, password: req.body.password }, secretcode)
+                    client.setex(req.body.email + 'token', 5000, temptoken)
+                    client.setex(req.body.email + 'secretkey', 5000, temptoken)
+
+
+                    sendSmtpEmail.subject = "UFIT Login";
+                    sendSmtpEmail.htmlContent = "<html><body><h1>The OTP for the website is "
+                    temptoken + "</h1></body></html>";
+                    sendSmtpEmail.sender = { "name": "Lokesh", "email": "gurorkrupa@gmail.com" };
+                    sendSmtpEmail.to = [{ "email": req.body.email, "name": "Jane Doe" }];
+
+                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
+                        console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+                        res.status(200).json({ message: "OTP sent to the email", temptoken: temptoken })
+                    }, function(error) {
+                        console.error(error);
+                    });
 
                 } else {
                     res.status(401).json({ message: "Incorrect Password.Retry" })
