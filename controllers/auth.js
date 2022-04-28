@@ -54,7 +54,7 @@ exports.login = (req, res, next) => {
                     temptoken + "</h1></body></html>";
                     sendSmtpEmail.sender = { "name": "Lokesh", "email": "gurorkrupa@gmail.com" };
                     sendSmtpEmail.to = [{ "email": req.body.email, "name": "Jane Doe" }];
-
+                    res.status(200).json({ message: "OTP sent to the email", temptoken: temptoken })
                     apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
                         console.log('API called successfully. Returned data: ' + JSON.stringify(data));
                         res.status(200).json({ message: "OTP sent to the email", temptoken: temptoken })
