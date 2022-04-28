@@ -24,3 +24,16 @@ exports.createWorkout = async(req, res, next) => {
         res.status(500).json({ message: "The schedule can't be created or the user doesn't exist." })
     }
 }
+exports.deleteWorkout = async(req, res, next) => {
+    const id = req.params.workoutid
+
+}
+exports.editWorkout = (req, res, next) => {
+
+}
+exports.deleteWorkout = (req, res, next) => {
+
+}
+exports.getDoneWorkouts = (req, res, next) => {
+
+}
