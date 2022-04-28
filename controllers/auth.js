@@ -108,7 +108,7 @@ exports.otp_verify = async(req, res, next) => {
                         return res.status(200).json({ message: "Succesfuly Logged in", token: usertoken })
                     }
                 } catch {
-                    return res.status(401).json({ message: "OTP expired.Try again" })
+                    return res.status(401).json({ message: "Incorrect OTP.Try again" })
                 }
             }
         } catch (err) {
