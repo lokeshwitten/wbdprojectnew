@@ -59,7 +59,7 @@ exports.login = (req, res, next) => {
                     console.log(SendSmtpEmail.sender)
                     apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
                         console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-                        return res.status(200).json({ message: "OTP sent to the email", temptoken: temptoken })
+                        return res.status(200).json({ message: "OTP sent to the email", temptoken: temptoken, tempuserid: user.id })
                     }, function(error) {
                         console.error(error);
                     });
@@ -81,5 +81,6 @@ exports.email_verify = (req, res, next) => {
 
 }
 exports.otp_verify = (req, res, next) => {
+
 
 }
