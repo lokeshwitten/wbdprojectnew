@@ -12,6 +12,10 @@ hooks:
     - location: scripts/before_install.sh
       timeout: 300
       runas: root
+  tests:
+    -location: test/basic_tests.py
+      timeout: 300
+      runas: root
   ApplicationStart:
     - location: scripts/application_start.sh
       timeout: 300
