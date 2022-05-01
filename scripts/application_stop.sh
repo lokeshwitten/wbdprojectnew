@@ -1,4 +1,4 @@
 #!/bin/bash
 #Stopping existing node servers
 echo "Stopping any existing node servers"
-sudo kill node
+sudo killall -s KILL node
